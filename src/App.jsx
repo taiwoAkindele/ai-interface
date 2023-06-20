@@ -7,17 +7,25 @@ const VITE_MAIN_URL = import.meta.env.VITE_MAIN_URL;
 function App() {
   const [value, setValue] = useState("");
   const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await axios.post(
-      `${VITE_MAIN_URL}Agric_Extension?question=${value}`
-    );
-    setResponse(response.data.response);
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${VITE_MAIN_URL}Agric_Extension?question=${value}`
+      );
+      setResponse(response.data.response);
+      setLoading(false);
+    } catch (err) {
+      setLoading(false);
+      alert("Something went wrong. Try again!");
+    }
   };
 
   return (
-    <div className="flex gap-[1.8rem] bg-[#F23557] justify-center mx-auto px-[7rem] py-[2rem]">
+    <div className="flex gap-[1.8rem] bg-[#fff] justify-center mx-auto px-[7rem] py-[2rem]">
       <div className="flex flex-col gap-[1rem]">
         <h1>Agricultural Chat Bot</h1>
         <h5>Please input your text here</h5>
@@ -35,7 +43,7 @@ function App() {
             type="submit"
             className="cursor-pointer text-[#ffffff] bg-[#000000] py-[.5rem] px-[2rem]"
           >
-            Send
+            {loading ? "loading..." : "Send"}
           </button>
           <button
             type="button"
